@@ -1,17 +1,51 @@
 The Click Ninja
 ===================
-It's like the app [fruit ninja](https://fruitninja.com/), but different and better. We write the code and control how the game operates. Check out this awesome preview!
 
+A coding instructional implementation based on the [Predigame Platform](http://predigame.com/). Many of the features have been curated by ~75 aspiring innovators (ages 10+) who love to flex their STEM prowess by putting ideas to code!
+
+Click Ninja was inspired by the app [fruit ninja](https://fruitninja.com/), but a little different since we have a mouse. As coders, we write the code and control how the game operates.
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/_O8kF_3XAMg/0.jpg)](https://youtu.be/_O8kF_3XAMg "Click Ninja")
 
-----------
-Prerequisites
--------------
-In order to hack this game, you'll need [python 3](https://www.python.org/downloads/) installed and well as Predicate's Gaming Platform - predigame - which is installed as a [pip package](https://github.com/predicateacademy/predigame).
+## Instructional Coverage
 
-----------
-Basic Game
--------------
+We're working on some videos to describe Predigame concepts in more detail, but this game illustrates quite a few pretty cool features of the platform.
+
+**Predigame Concepts Covered:**
+
+- Callbacks (timing and mouse)
+- Levels
+- Image Sprite Effects
+- Sound Effects
+
+The game consists of three python (only one is needed to run the game):
+
+-   `clickninja.py`  - You'll create this file as part of this tutorial.
+-   `clickninja-final.py` - A "camera ready" version of the game.
+-   `clickninja-levels.py` - An extension of `clickninja-final.py` but with level support.
+
+## Installation (TODO)
+
+You'll need the Predigame platform installed (visit  [http://predigame.com](http://predigame.com/)  if you need help).
+
+-   Download a release:
+-   Clone the repo:
+
+## Running the Game
+
+We recommend running all predigames from the command prompt/console/terminal. Be sure to  `cd`  into your game directory run:
+
+```
+my_machine$ pigm clickninja.py
+```
+If you want to give one of the complete versions a spin, run one of these commands.
+```
+my_machine$ pigm clickninja-final.py
+my_machine$ pigm clickninja-levels.py
+```
+
+
+# Basic Game
+
 The fundamentals for click ninja are pretty basic. Open a text editor and copy in the follow code. This will create a window of 20x14 blocks and a title of 'Click Ninja'
 ```python
 WIDTH = 20
@@ -118,7 +152,7 @@ def destroy(s):
 At this point we almost have a fully functional game. We just need to add a keep alive function. That is, we want to make sure we stop the game if we don't click on a circle. Look for this line of code in our game:
 
 ```python
-    s.move_to(arc[1], arc[2], callback = s.destroy)
+    s.move_to(arc[1], arc[2], callback= s.destroy)
 ```
 The way this code is written, the callback function `s.destroy` will be called if nothing else happens to the shape. Let's create a new callback function `failure(s)` that will pause the game. Notice we'll use something called a lambda. We'll be sure to discuss what that means at a later point.
 ```python
@@ -158,11 +192,7 @@ callback(spawn, 1)
 keydown('r', reset)   
 ```
 # Version 2: Throwing Food
-Let's swap out circles for pictures of food. The predigame platform makes it easy to load pictures in your game. Just copy them to an `images` subdirectory.
-
-    my_machine$ mkdir images
-
-The click ninja includes a few food images to get started. Let's see what we have.
+Let's swap out circles for pictures of food. The predigame platform makes it easy to load pictures in your game. Just copy them to an `images` subdirectory. The click ninja includes a few food images to get started. Let's see what we have.
 
     my_machine$ ls images
     bananas.png  cherries.png ham.png      icee.png     pizza.png    taco.png
@@ -565,3 +595,148 @@ def failure(s):
         callback(gameover, 0.01)
 ```
 The key to the explosion is the `.pulse(0.05)` function call. The game will quickly pause, but the pulse is fast enough to provide an explosion effect.
+
+# Levels!
+Click Ninja is 1000x better when you add levels! We won't get into the coding specifics for levels here - that'll be covered in other [Predigame](http://predigame.com) examples, but here is a leveled version of the code, with plenty of inline comments:
+
+```python
+WIDTH = 20
+HEIGHT = 14
+TITLE = 'Click Ninja (Leveled Edition)'
+
+# handle to current level (used by generic functions)
+current_level = None
+
+def destroy(s):
+    sound('swoosh')
+    current_level.hit()
+    if s.name == 'taco':
+       score(50)
+    else:
+       score(5)
+
+    # draw a splatting image at the center position of the image
+    image('redsplat', center=s.event_pos, size=2).fade(1.0)
+
+    # add a fade out effect
+    s.fade(0.25)
+
+def failure(s):
+    score(-20)
+    if s.name == 'bomb':
+        s.destroy()
+        image('explode', center=s.center, size=10).pulse(0.05)
+
+    if s.name == 'bomb' or score() < 0:
+        sound('scream')
+        text('You Survived %s seconds' % current_level.get_duration(), MAROON)
+        callback(gameover, 0.01)
+
+def spawn(min_size=4, max_size=4, min_speed=1, max_speed=1, min_rate=1, max_rate=1):
+    """ leveled version includes min/max parameters """
+    size = rand(min_size, max_size)
+    speed = rand(min_speed,max_speed)
+
+    target = choice(['bananas', 'cherries',
+                     'olives', 'ham', 'hotdog',
+                     'fries','icee', 'pizza'])
+
+    if randint(1, 4) == 2:
+        target = 'bomb'
+    if randint(1, 10) == 5:
+        target = 'taco'
+
+    sound('launch')
+
+    arc = rand_arc()
+
+    s = image(target, arc[0], size=size)
+    if target == 'bomb':
+       s.speed(speed).spin(1).clicked(failure)
+       s.move_to(arc[1], arc[2], callback = s.destroy)
+    elif target == 'taco':
+       s.speed(5).spin().clicked(destroy)
+       s.move_to((-10, -2), (-5, HEIGHT/2), (WIDTH+1, HEIGHT/2), callback = s.destroy)
+    else:
+       s.speed(speed).clicked(destroy)
+       s.move_to(arc[1], arc[2], callback = lambda: failure(s))
+
+    callback(partial(spawn, min_speed=min_speed, max_speed=max_speed,
+                     min_rate=min_rate, max_rate=max_rate,
+                     min_size=min_size, max_size=max_size), rand(min_rate, max_rate))
+
+class NinjaLevel(Level):
+    """ defines the behavior of a single level """
+    def __init__(self, level=1, total_hits=0, duration=0, min_size=4, max_size=4, min_speed=1, max_speed=1, min_rate=3, max_rate=3):
+        self.level = level
+
+        self.min_size = min_size
+        # prevent sizes from getting too small
+        if self.min_size < 0.1:
+            self.min_size = 0.1
+
+        self.min_speed = min_speed
+        # prevent speed from getting too small
+        if self.min_speed < 0.1:
+            self.min_speed = 0.1
+
+        self.min_rate = min_rate
+        # prevent launch rates from getting too small
+        if self.min_rate < 0:
+            self.min_rate = 0
+
+        self.max_size = max_size
+        self.max_speed = max_speed
+        self.max_rate = max_rate
+        self.hits = 0
+        self.total_hits = total_hits
+        self.duration = duration
+
+    def hit(self):
+        self.hits += 1
+        self.total_hits += 1
+        score(self.total_hits, pos=LOWER_LEFT)
+
+    def get_duration(self):
+        return score(pos=LOWER_RIGHT)
+
+    def setup(self):
+        """ setup the level """
+        global current_level
+        current_level = self
+
+        # BACKGROUND (randomly selected)
+        background()
+
+        # SCORE BOARD
+        score(0, prefix='Score: ')
+        score(self.total_hits, pos=LOWER_LEFT, color=BLACK, method=VALUE, prefix='Hits: ')
+        score(pos=LOWER_RIGHT, color=BLACK, value=self.duration, method=TIMER,
+              step=1, goal=1000, prefix='Duration: ')
+        score(self.level, pos=UPPER_RIGHT, color=BLACK, method=VALUE, prefix='Level: ')
+
+        # START LEVEL
+        callback(partial(spawn, min_speed=self.min_speed, max_speed=self.max_speed,
+                         min_rate=self.min_rate, max_rate=self.max_rate,
+                         min_size=self.min_size, max_size=self.max_size), 1)
+
+        # KEYBOARD EVENTS
+        keydown('r', reset)
+
+    def completed(self):
+        """ 10 hits are required to complete a level """
+        if self.hits == 10:
+            return True
+        else:
+            return False
+
+    def next(self):
+        """ load the next level """
+        return NinjaLevel(level=self.level+1, total_hits=self.total_hits,
+                          duration=score(pos=LOWER_RIGHT),
+                          min_speed=self.min_speed-0.1, max_speed=self.max_speed+0.5,
+                          min_rate=self.min_rate-0.5, max_rate=self.max_rate-0.1,
+                          min_size=self.min_size-0.5, max_size=self.max_size)
+
+level(NinjaLevel(1))
+```
