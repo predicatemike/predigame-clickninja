@@ -4,6 +4,7 @@ The Click Ninja
 A coding instructional implementation based on the [Predigame Platform](http://predigame.com/). Many of the features have been curated by ~75 aspiring innovators (ages 10+) who love to flex their STEM prowess by putting ideas to code!
 
 Click Ninja was inspired by the app [fruit ninja](https://fruitninja.com/), but a little different since we have a mouse. As coders, we write the code and control how the game operates.
+
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/_O8kF_3XAMg/0.jpg)](https://youtu.be/_O8kF_3XAMg "Click Ninja")
 
 ## Instructional Coverage
