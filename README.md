@@ -5,7 +5,7 @@ A coding instructional implementation based on the [Predigame Platform](http://p
 
 Click Ninja was inspired by the app [fruit ninja](https://fruitninja.com/), but a little different since we have a mouse. As coders, we write the code and control how the game operates.
 
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/_O8kF_3XAMg/0.jpg)](https://youtu.be/_O8kF_3XAMg "Click Ninja")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/jKYfLYLctHE/0.jpg)](https://youtu.be/jKYfLYLctHE "Click Ninja")
 
 ## Instructional Coverage
 
