@@ -35,12 +35,12 @@ You'll need the Predigame platform installed (visit  [http://predigame.com](http
 We recommend running all predigames from the command prompt/console/terminal. Be sure to  `cd`  into your game directory run:
 
 ```
-my_machine$ pigm clickninja.py
+my_machine$ pred clickninja.py
 ```
 If you want to give one of the complete versions a spin, run one of these commands.
 ```
-my_machine$ pigm clickninja-final.py
-my_machine$ pigm clickninja-levels.py
+my_machine$ pred clickninja-final.py
+my_machine$ pred clickninja-levels.py
 ```
 
 
@@ -52,9 +52,9 @@ WIDTH = 20
 HEIGHT = 14
 TITLE = 'Click Ninja'
 ```
-Save your changes. Let's call the file `clickninja.py`.  Try running the game from the terminal using the `pigm` command (you'll want to run this command from the directory where you saved the file).
+Save your changes. Let's call the file `clickninja.py`.  Try running the game from the terminal using the `pred` command (you'll want to run this command from the directory where you saved the file).
 
-    my_machine$ pigm clickninja.py
+    my_machine$ pred clickninja.py
 
 This game doesn't do much just yet. Just an empty window titled "Click Ninja". So boring. Let's add some more code. We added a bunch of comments to describe the purpose of each line.
 
